@@ -41,30 +41,43 @@ class Trial(utils.Event):
 
         # Get the stimulus
         # Currently this doesn't allow for any keyword arguments (e.g. replacement, shuffle)
+        logger.debug("Getting trial stimulus")
         self.stimulus = self.condition.get()
 
         # Any pre-trial logging / computations
+        logger.debug("Calling trial_pre")
         self.experiment.trial_pre()
 
         # Perform stimulus playback
+        logger.debug("Calling stimulus_pre")
         self.experiment.stimulus_pre()
+        logger.debug("Calling stimulus_main")
         self.experiment.stimulus_main()
+        logger.debug("Calling stimulus_post")
         self.experiment.stimulus_post()
 
         # Evaluate subject's response
+        logger.debug("Calling response_pre")
         self.experiment.response_pre()
+        logger.debug("Calling response_main")
         self.experiment.response_main()
+        logger.debug("Calling response_post")
         self.experiment.response_post()
 
         # Consequate the response with a reward, punishment or neither
+        logger.debug("Calling consequate_pre")
         self.experiment.consequate_pre()
+        logger.debug("Calling consequate_main")
         self.experiment.consequate_main()
+        logger.debug("Calling consequate_post")
         self.experiment.consequate_post()
 
         # Finalize trial
+        logger.debug("Calling trial_post")
         self.experiment.trial_post()
 
         # Store trial data
+        logger.debug("Calling subject store")
         self.experiment.subject.store_data()
 
 
@@ -83,6 +96,7 @@ class TrialHandler(queues.BaseHandler):
 
         for condition in self.queue:
             self.trial_index += 1
+            logger.debug("Creating trial %d" % self.trial_index)
             trial = Trial(index=self.trial_index,
                           experiment=self.block.experiment,
                           stimulus_condition=condition)

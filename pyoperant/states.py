@@ -5,8 +5,8 @@ from pyoperant import EndSession, EndExperiment, ComponentError, InterfaceError,
 logger = logging.getLogger(__name__)
 def log_error_callback(err):
 
-    if isinstance(err, (InterfaceError, ComponentError)):
-        logger.critical(repr(err))
+    # if isinstance(err, (InterfaceError, ComponentError)):
+    logger.critical(repr(err))
 
 def run_state_machine(experiment, start_in='pre', error_state=None, error_callback=None, **states):
     """runs a state machine defined by the keyword arguments
@@ -111,6 +111,7 @@ class Session(State):
 
     def __enter__(self):
 
+        logger.debug("Calling session_pre")
         self.experiment.session_pre()
 
         return self
@@ -118,6 +119,7 @@ class Session(State):
     def run(self):
 
         try:
+            logger.debug("Calling session_main")
             self.experiment.session_main()
         except EndSession:
             logger.info("Session has ended")
@@ -129,8 +131,10 @@ class Session(State):
 
     def __exit__(self, type_, value, traceback):
 
+        logger.debug("Calling session_post")
         self.experiment.session_post()
 
+        logger.debug("Exiting state Session")
         return super(Session, self).__exit__(type_, value, traceback)
 
 
