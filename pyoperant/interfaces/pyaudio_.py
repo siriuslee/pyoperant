@@ -147,10 +147,13 @@ class PyAudioInterface(base_.AudioInterface):
         try:
             logger.debug("Attempting to close pyaudio stream")
             events.write(event)
+            self.stream.stop_stream()
             self.stream.close()
             logger.debug("Stream closed")
         except AttributeError:
             self.stream = None
+        except IOError:
+            logger.warning("Error closing stream. Attempting to continue")
         try:
             self.wf.close()
         except AttributeError:
